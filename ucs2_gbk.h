@@ -1,9 +1,10 @@
 #ifndef UCS2_TO_GBK_CONV_H
 #define UCS2_TO_GBK_CONV_H
 
-//#if ARDUINO >= 100
+#ifdef _WIN32
+#else
 # include "Arduino.h"
-//#endif
+#endif
 
 // UCS2到GBK编码转换库
 namespace Encoding

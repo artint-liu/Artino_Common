@@ -1,4 +1,9 @@
+#ifdef _WIN32
+#include <stdint.h>
+#define PROGMEM
+#else
 #include <Arduino.h>
+#endif
 #include "Font.h"
 #include "ucs2_gbk.h"
 #include "ASCII16.h"
@@ -47,14 +52,10 @@ namespace Artint_HZK
 
   int8_t BitmapFont_ASC16::Query(const char* pText, size_t len, BITMAPFONT* pFont)
   {
-    if (*pText >= 0 && *pText <= 127)
-    {
-      pFont->data = ASCII16Bitmaps + (*pText) * (16 * 8 / 8);
-      pFont->width = 8;
-      pFont->height = 16;
-      return 1;
-    }
-    return 0;
+    pFont->data = ASCII16Bitmaps + (uint16_t)(*(uint8_t*)pText) * (16 * 8 / 8);
+    pFont->width = 8;
+    pFont->height = 16;
+    return 1;
   }
 
   int8_t BitmapFont_HZK16::Query(const char* pText, size_t len, BITMAPFONT* pFont)
