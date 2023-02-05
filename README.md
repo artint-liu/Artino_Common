@@ -1,6 +1,7 @@
 16点阵汉字库，包含额外ASCII 16点阵字库
 
 需要额外的显示代码
+```C++
 void DrawChar(int x, int y, int w, int h, const uint8_t* data)
 {
   for (int yy = 0; yy < h; yy++)
