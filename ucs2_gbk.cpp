@@ -7,7 +7,7 @@
 #include <avr/pgmspace.h>
 #endif
 
-#include "ucs2_gbk.h"
+//#include "ucs2_gbk.h"
 
 #ifndef pgm_read_word
 #define pgm_read_word(addr) (*(const unsigned short *)(addr))
