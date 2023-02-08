@@ -4,7 +4,7 @@
 #else
 #include <Arduino.h>
 #endif
-#include "Font.h"
+#include "Artino_Font.h"
 //#include "ucs2_gbk.h"
 #include "ASCII16.h"
 
@@ -12,7 +12,7 @@ const uint8_t hzk16Bitmap[] PROGMEM = {
 #include "hzk16.h"
 };
 
-// UCS2µΩGBK±‡¬Î◊™ªªø‚
+// UCS2ËΩ¨GBKÁºñÁ†Å
 namespace Encoding
 {
     uint16_t UCS2GBK(uint16_t ch);

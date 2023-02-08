@@ -2,6 +2,7 @@
 #include <stdint.h>
 #define PROGMEM
 #elif defined(ESP8266) || defined(ESP32)
+#include <Arduino.h>
 #include <pgmspace.h>
 #else
 #include <avr/pgmspace.h>
