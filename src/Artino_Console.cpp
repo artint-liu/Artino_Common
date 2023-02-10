@@ -1,8 +1,10 @@
 #ifdef _WIN32
 #include <stdint.h>
+#include <stdio.h>
+#include <stdarg.h>
 #else
-#endif
 #include <Arduino.h>
+#endif
 #include "Artino_Console.h"
 
 // void LCD_Write(int x, int y, const char* text, size_t len);
@@ -41,7 +43,7 @@ namespace Artino
         va_end(copy);
         if (len >= sizeof(loc_buf))
         {
-            temp = (char *)malloc(len + 1);
+            temp = new char(len + 1);
             if (temp == NULL)
             {
                 return 0;
@@ -53,7 +55,7 @@ namespace Artino
 
         if (len >= sizeof(loc_buf))
         {
-            free(temp);
+            delete[] (temp);
         }
         return len;
     }
