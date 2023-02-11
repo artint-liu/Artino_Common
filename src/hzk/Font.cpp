@@ -12,6 +12,8 @@ const uint8_t hzk16Bitmap[] PROGMEM = {
 #include "hzk16.h"
 };
 
+const size_t hzk16Size = sizeof(hzk16Bitmap);
+
 // UCS2转GBK编码
 namespace Encoding
 {
@@ -35,6 +37,8 @@ const uint8_t aASCIIBitmap32[] = {
 
 #define IS_UTF8(str, i) ((str[i] & 0xf0) == 0xE0 && (str[i + 1] & 0xC0) == 0x80 && (str[i + 2] & 0xC0) == 0x80)
 #define UTF8_TO_UCS2(str, i) (((str[i] & 0x0F) << 12) | ((str[i + 1] & 0x3F) << 6) | (str[i + 2] & 0x3F))
+#define IS_GB2312(str, i) ((uint8_t)str[i] >= 0xA1 && (uint8_t)str[i] <= 0xFE && (uint8_t)str[i + 1] >= 0xA1 && (uint8_t)str[i + 1] <= 0xFE)
+#define GB2312_TO_INDEX(str, i) (((uint16_t)((uint8_t)str[i] - 0xA1)) * 94 + ((uint16_t)((uint8_t)str[i + 1] - 0xA1)))
 
 #ifdef EMU_WIN32
 void RevertBits(const uint8_t* data, size_t len);
@@ -67,16 +71,38 @@ namespace Artint_HZK
 
   int8_t BitmapFont_HZK16::Query(const char* pText, size_t len, BITMAPFONT* pFont)
   {
-    if (len >= 3 && IS_UTF8(pText, 0))
+    if (encoding == TextEncoding::UTF8)
     {
-      uint16_t ucs2 = UTF8_TO_UCS2(pText, 0);
-      uint16_t gbk = Encoding::UCS2GBK(ucs2);
-      const uint32_t stride = (16 * 16 / 8);
-      uint32_t offset = GB2312ToIndex(gbk) * stride;
-      pFont->data = hzk16Bitmap + offset;
-      pFont->width = 16;
-      pFont->height = 16;
-      return 3;
+      if (len >= 3 && IS_UTF8(pText, 0))
+      {
+        uint16_t ucs2 = UTF8_TO_UCS2(pText, 0);
+        uint16_t gbk = Encoding::UCS2GBK(ucs2);
+        const uint32_t stride = (16 * 16 / 8);
+        uint32_t offset = GB2312ToIndex(gbk) * stride;
+        if (offset < hzk16Size)
+        {
+          pFont->data = hzk16Bitmap + offset;
+          pFont->width = 16;
+          pFont->height = 16;
+        }
+        return 3;
+      }
+    }
+    else if (encoding == TextEncoding::GB2312)
+    {
+      if (len >= 2 && IS_GB2312(pText, 0))
+      {
+        uint32_t index = GB2312_TO_INDEX(pText, 0);
+        const uint32_t stride = (16 * 16 / 8);
+        uint32_t offset = index * stride;
+        if (offset < hzk16Size)
+        {
+          pFont->data = hzk16Bitmap + offset;
+          pFont->width = 16;
+          pFont->height = 16;
+          return 2;
+        }
+      }
     }
     return asc16.Query(pText, len, pFont);
   }

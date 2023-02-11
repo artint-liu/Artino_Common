@@ -18,11 +18,18 @@ namespace Artint_HZK
     virtual int8_t Query(const char* pText, size_t len, BITMAPFONT* pFont) = 0;
   };
 
+  enum class TextEncoding
+  {
+    ASCII,
+    UTF8,
+    GB2312,
+  };
 
 
   class BitmapFont_HZK16 : public BitmapFont
   {
   public:
+    TextEncoding encoding = TextEncoding::UTF8;
     virtual int8_t Query(const char* pText, size_t len, BITMAPFONT* pFont);
   };
 
