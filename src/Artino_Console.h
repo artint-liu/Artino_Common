@@ -5,6 +5,7 @@ namespace Artino
 {
     class Console
     {
+    protected:
         int16_t m_x = 0;
         int16_t m_y = 0;
         uint16_t m_crText = 0XFFFF;
