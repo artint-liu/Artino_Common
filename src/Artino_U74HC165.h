@@ -67,6 +67,33 @@ public:
 		}
 		return ((H << 8) | L);
 	}
+
+	void ReadBytes(uint8_t* pOut, int16_t nBytesCount)
+	{
+		digitalWrite(m_plPin, LOW);
+		digitalWrite(m_plPin, HIGH);
+
+		if (m_selectPin >= 0)
+		{
+			digitalWrite(m_selectPin, LOW);
+		}
+
+		for(int16_t i = nBytesCount - 1; i >= 0; i--)
+		{
+			pOut[i] = (uint16_t)shiftIn(m_dataPin, m_clockPin, LSBFIRST);
+		}
+
+		if (m_selectPin >= 0)
+		{
+			digitalWrite(m_selectPin, HIGH);
+		}
+	}
+	
+	void ReadWords(uint16_t* pOut, int16_t nWordsCount)
+	{
+		uint8_t *pOut8 = reinterpret_cast<uint8_t*>(pOut);
+		ReadBytes(pOut8, nWordsCount * 2);
+	}
 };
 
 #endif // _U74HCT4094_H_
