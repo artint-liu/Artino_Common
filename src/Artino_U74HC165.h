@@ -68,7 +68,7 @@ public:
 		return ((H << 8) | L);
 	}
 
-	void ReadBytes(uint8_t* pOut, int16_t nBytesCount)
+	void ReadBytes(uint8_t* pOut, int16_t nBytesCount, bool bFlip = false)
 	{
 		digitalWrite(m_plPin, LOW);
 		digitalWrite(m_plPin, HIGH);
@@ -78,9 +78,19 @@ public:
 			digitalWrite(m_selectPin, LOW);
 		}
 
-		for(int16_t i = nBytesCount - 1; i >= 0; i--)
+		if(bFlip)
 		{
-			pOut[i] = (uint16_t)shiftIn(m_dataPin, m_clockPin, LSBFIRST);
+			for(int16_t i = nBytesCount - 1; i >= 0; i--)
+			{
+				pOut[i] = (uint16_t)shiftIn(m_dataPin, m_clockPin, LSBFIRST);
+			}
+		}
+		else
+		{
+			for(int16_t i = 0; i < nBytesCount; i++)
+			{
+				pOut[i] = (uint16_t)shiftIn(m_dataPin, m_clockPin, LSBFIRST);
+			}
 		}
 
 		if (m_selectPin >= 0)
