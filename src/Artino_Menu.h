@@ -20,6 +20,8 @@ namespace Artino
         MenuKey_None,
         MenuKey_Down,
         MenuKey_Up,
+        MenuKey_PageDown,
+        MenuKey_PageUp,
         MenuKey_Confirm,
     };
 
@@ -90,6 +92,30 @@ namespace Artino
                     if ((select - topindex + 1) * font_height > m_rect.bottom)
                     {
                       topindex = select - (m_rect.bottom - m_rect.top) / font_height + 1;
+                    }
+                }
+                else if (key == MenuKey_PageUp)
+                {
+                    select -= (m_rect.bottom - m_rect.top) / m_item_height;
+                    if (select < 0)
+                    {
+                        select = 0;
+                    }
+                    if (select < topindex)
+                    {
+                        topindex = select;
+                    }
+                }
+                else if (key == MenuKey_PageDown)
+                {
+                    select += (m_rect.bottom - m_rect.top) / m_item_height;
+                    if (select >= m_count)
+                    {
+                        select = m_count - 1;
+                    }
+                    if ((select - topindex + 1) * font_height > m_rect.bottom)
+                    {
+                        topindex = select - (m_rect.bottom - m_rect.top) / font_height + 1;
                     }
                 }
                 else if (key == MenuKey_Confirm)
