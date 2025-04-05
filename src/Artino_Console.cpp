@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #else
 #include <Arduino.h>
+#include <stdarg.h>
 #endif
 #include "Artino_Console.h"
 

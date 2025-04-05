@@ -13,6 +13,24 @@ public:
 		: m_clockPin(clockPin), m_dataPin(dataPin), m_selectPin(selectPin), m_plPin(plPin)
 	{
 	}
+#ifdef ARDUINO_ARCH_RP2040
+	uint8_t shiftIn(uint8_t dataPin, uint8_t clockPin, uint8_t bitOrder)
+	{
+		uint8_t value = 0;
+		for (uint8_t i = 0; i < 8; ++i) {
+			digitalWrite(clockPin, LOW);     // 拉低时钟完成脉冲
+			delayMicroseconds(1);  // 根据74LV165时序表调整
+			if (bitOrder == LSBFIRST) {
+				value |= (!!digitalRead(dataPin)) << i; // 低位在前，依次填充到对应位置
+			} else {
+				value = (value << 1) | (!!digitalRead(dataPin)); // 高位在前，左移后合并新位
+			}
+			digitalWrite(clockPin, HIGH);    // 触发时钟上升沿
+			delayMicroseconds(1);  // 根据74LV165时序表调整
+		}
+		return value;
+	}
+#endif	
 
 	void Begin()
 	{
@@ -71,6 +89,9 @@ public:
 	void ReadBytes(uint8_t* pOut, int16_t nBytesCount, bool bFlip = false)
 	{
 		digitalWrite(m_plPin, LOW);
+#ifdef ARDUINO_ARCH_RP2040
+		delayMicroseconds(5);  // 确保LOAD信号有效
+#endif		
 		digitalWrite(m_plPin, HIGH);
 
 		if (m_selectPin >= 0)
